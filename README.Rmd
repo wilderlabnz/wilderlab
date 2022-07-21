@@ -1,0 +1,279 @@
+---
+title: ""
+output: 
+  md_document
+---
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+#knitr::opts_chunk$set(out.width='750px', dpi=200)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+```{css css, echo = FALSE}
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+
+h4{
+  color: #016793;
+}
+```
+```{r echo = FALSE}
+get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
+  if(tb == "records" & is.null(JobID)) stop("Please specify a valid JobID to access eDNA records")
+  if(tb != "records" & !is.null(JobID)) stop("JobID is only necessary for accessing records table")
+  ## tutorial example
+  if(key == "AKIATVYXGCYLWADFJVEX" &
+     secret == "SiDvZFUFXlCXK/jeBtHrfRPWMmb8veW6q5+ULuyx" &
+     xapikey == "7CCm580l5vgeKbalwIEy565uFhbEudTauAq80B38"){
+    if(tb == "jobs"){
+      tmpf <- tempfile()
+      test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/jobs.rds", destfile = tmpf, mode = "wb")
+      res <- readRDS(tmpf)
+      return(res)
+    }else if (tb == "samples"){
+      tmpf <- tempfile()
+      test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/samples.rds", destfile = tmpf, mode = "wb")
+      res <- readRDS(tmpf)
+      return(res)
+    }else if(tb == "taxa"){
+      tmpf <- tempfile()
+      test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/taxa.rds", destfile = tmpf, mode = "wb")
+      res <- readRDS(tmpf)
+      return(res)
+    }else if(tb == "records"){
+      tmpf <- tempfile()
+      if(JobID == 601833){
+        test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/records601833.rds", destfile = tmpf, mode = "wb")
+        res <- readRDS(tmpf)
+        return(res)
+      }else if(JobID == 601834){
+        test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/records601834.rds", destfile = tmpf, mode = "wb")
+        res <- readRDS(tmpf)
+        return(res)
+      }else{
+        return(NULL)
+      }
+    }
+  }
+  addon <- paste0("&JobID=", JobID)
+  URL <- paste0("https://connect.wilderlab.co.nz/edna/?query=", tb, if(!is.null(JobID)) addon else NULL)
+  d_timestamp <- format(Sys.time(), "%Y%m%dT%H%M%SZ", tz = "UTC")
+  qargs <- list(query = tb)
+  if(!is.null(JobID)) qargs <- c(qargs, list(JobID = JobID))
+  test <- aws.signature::signature_v4_auth(datetime = d_timestamp,
+                                           service = "execute-api",
+                                           verb = "GET",
+                                           request_body = "",
+                                           region = "ap-southeast-2",
+                                           key = key,
+                                           secret = secret,
+                                           verbose = FALSE,
+                                           action = "/edna/",
+                                           query_args = qargs,
+                                           canonical_headers = list(host = "connect.wilderlab.co.nz",`X-Amz-Date` = d_timestamp)
+  )
+  headers <- list()
+  headers[["x-amz-date"]] <- d_timestamp
+  headers[["Authorization"]] <- test[["SignatureHeader"]]
+  headers[["X-API-Key"]] <- xapikey
+  H <- do.call(httr::add_headers, headers)
+  r <- suppressMessages(httr::GET(URL, H))
+  dat <- rjson::fromJSON(json_str = httr::content(r, "text", encoding = "UTF-8"))
+  dat <- dat$message
+  tmpf <- tempfile()
+  cat(dat, file = tmpf)
+  res <- read.csv(tmpf)
+  return(res)
+}
+```
+
+
+--------------------------------------------------------------------------------
+
+# Wilderlab R package
+
+The `wilderlab` R package contains functions for importing and exporting eDNA data 
+
+## connect.wilderlab API Instructions
+
+### 1. Installation
+
+To download the package from GitHub, ensure that `devtools` is installed:
+
+```{r, eval = FALSE}
+if(!("devtools" %in% list.files(.libPaths()))) install.packages("devtools")
+```
+
+Then run:
+
+```{r, eval = FALSE}
+devtools::install_github("wilderlabnz/wilderlab") 
+library(wilderlab)
+```
+
+### 2. Load access keys
+
+When singing up to the Wilderlab API, your unique log in information will be securely sent to you. This will include three access keys: an API access key id, `key`; a secret access key, `secret`; and a X-API-Key, `xapikey`.  
+Copy and paste this unique information into the appropriate slots in the following code to load them into your R session.
+
+```{r eval=FALSE}
+key <- "*****************"
+secret <- "***************************************"
+xapikey <- "***************************************"
+```
+
+### 3. `get_wilderdata` function
+
+#### Description
+
+Wrapper functions for creating URLs and authorisation headers to download job, sample, taxa, and record information from the connect.wilderlab API.
+
+#### Usage
+
+```{r eval = FALSE}
+get_wilderdata(tb, key, secret, xapikey, JobID = NULL)
+```
+
+#### Arguments
+
+| Argument | Description
+|:-|:--------
+`tb` | a character string specifying the table required. Accepted values are `jobs`, `samples`, `taxa`, and `records`. 
+`key` | a string specifying the API access key for the client account. Please contact info@wilderlab.co.nz if you would like access keys generated for your account.  
+`secret` | a string specifying the API secret access key for the client account. Please contact info@wilderlab.co.nz if you would like access keys generated for your account.
+`xapikey` | a string specifying the X-API-Key value for the client account. Please contact info@wilderlab.co.nz if you would like access keys generated for your account.
+`JobID` | a 6 digit integer specifying a Wilderlab job number. Required only for accessing the records table.
+
+#### Details
+
+The Wilderlab API is designed for clients to access up-to-date eDNA data for their internal data storage platforms and geospatial applications. Clients can access their job, sample, taxon and eDNA records data at any time by querying the API with a valid URL and authorization header. The `get_wilderdata` function is a wrapper that enables these URLs and headers to be compiled with minimal effort.
+
+### 4. Get data tables
+
+Pulling information from the `job`, `samples`, and `taxa` tables is very straightforward. All the information associated with a unique API access key is accessed as a whole: 
+
+```{r eval=FALSE}
+jobs <- get_wilderdata("jobs", key = key, secret = secret, xapikey = xapikey)
+samples <- get_wilderdata("samples", key = key, secret = secret, xapikey = xapikey)
+taxa <- get_wilderdata("taxa", key = key, secret = secret, xapikey = xapikey)
+```
+
+
+Pulling from the `records` table is done on a specified JobID thus multiple calls must be made to get a full records table. After accessing the `jobs` table, the relevant JobIDs can be iterated over, the corresponding records pulled through the API, and finally the gathered records combined into a complete records table. The following code chunk is an example of how this can be done.
+
+```{r eval=FALSE}
+records <- vector(mode = "list", length = nrow(jobs))
+for(i in seq_along(records)){
+  records[[i]] <- get_wilderdata("records", JobID = jobs$JobID[i],
+                                 key = key, secret = secret, xapikey = xapikey)
+}
+records <- do.call("rbind", records)
+```
+
+### 5. Fill lineage information
+
+The final step in completing the records table is to add lineage information and sample metadata. This is an optional step but can improve interpretation of the results.
+
+```{r eval=FALSE}
+tdb <- taxa[, 1:4]
+colnames(tdb) <- c("taxID", "parent_taxID", "rank", "name")
+lineages = insect::get_lineage(records$TaxID, tdb)
+records$phylum <- sapply(lineages, "[", "phylum")
+records$class <- sapply(lineages, "[", "class")
+records$order <- sapply(lineages, "[", "order")
+records$family <- sapply(lineages, "[", "family")
+records$genus <- sapply(lineages, "[", "genus")
+records$species <- sapply(lineages, "[", "species")
+records$Latitude <- samples$Latitude[match(records$UID,samples$UID)]
+records$Longitude <- samples$Longitude[match(records$UID,samples$UID)]
+records$ClientSampleID <- samples$ClientSampleID[match(records$UID,samples$UID)]
+```
+
+
+## Example output
+
+For the purposes of this manual, we will use example access keys as follows. This information will allow us to produce an example of what to expect from connecting to the Wilderlab API. Feel free to try out the API with these access keys first to ensure it is working as expected.
+
+```{r keys}
+key <- "AKIATVYXGCYLWADFJVEX"
+secret <- "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"
+xapikey <- "7CCm580l5vgeKbalwIEy565uFhbEudTauAq80B38"
+```
+
+### Jobs
+
+Getting information from the `jobs` table:
+
+```{r jobs}
+jobs <- get_wilderdata("jobs", key = key, secret = secret, xapikey = xapikey)
+jobs
+```
+
+
+### Samples
+
+Getting information from the `samples` table:
+
+```{r samples}
+samples <- get_wilderdata("samples", key = key, secret = secret, xapikey = xapikey)
+samples
+```
+
+### Taxa
+
+Getting information from the `taxa` table:
+
+```{r taxa}
+taxa <- get_wilderdata("taxa", key = key, secret = secret, xapikey = xapikey)
+head(taxa, 10)
+```
+
+### Records
+
+Getting information from the `records` table:
+
+```{r records}
+records <- vector(mode = "list", length = nrow(jobs))
+for(i in seq_along(records)){
+  records[[i]] <- get_wilderdata("records", JobID = jobs$JobID[i],
+                                 key = key, secret = secret, xapikey = xapikey)
+}
+records <- do.call("rbind", records)
+
+head(records, 10)
+```
+
+Adding lineage information and sample metadata information into the records table:
+
+```{r lineages}
+tdb <- taxa[, 1:4]
+colnames(tdb) <- c("taxID", "parent_taxID", "rank", "name")
+lineages = insect::get_lineage(records$TaxID, tdb)
+records$phylum <- sapply(lineages, "[", "phylum")
+records$class <- sapply(lineages, "[", "class")
+records$order <- sapply(lineages, "[", "order")
+records$family <- sapply(lineages, "[", "family")
+records$genus <- sapply(lineages, "[", "genus")
+records$species <- sapply(lineages, "[", "species")
+records$Latitude <- samples$Latitude[match(records$UID, samples$UID)]
+records$Longitude <- samples$Longitude[match(records$UID, samples$UID)]
+records$ClientSampleID <- samples$ClientSampleID[match(records$UID, samples$UID)]
+
+head(records, 10)
+```
+
+
+
+
+
+## Issues
+
+If you experience a problem using this software please feel free to
+raise it as an issue on [GitHub](https://github.com/wilderlabnz/wilderlab/issues/).
+
+
+
