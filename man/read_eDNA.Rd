@@ -14,7 +14,7 @@ blank, an interactive dialog box will be presented to the user.}
 A named list of tibbles of each sheet in the xlsx file. Note the metadata sheet is separated into job and samples metadata.
 }
 \description{
-Wrapper functions for creating URLs and authorizaton headers to download job, sample, taxa and record information
+Wrapper functions for creating URLs and authorization headers to download job, sample, taxa and record information
 from the connect.wilderlab API.
 }
 \details{
