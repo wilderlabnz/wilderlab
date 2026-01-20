@@ -10,24 +10,24 @@ get_wilderdata(tb, key, secret, xapikey, JobID = NULL)
 \item{tb}{a character string specifying the table required. Accepted values are 'jobs', 'samples', 'taxa' and 'records'}
 
 \item{key}{a string specifying the API access key for the client account.
-Please contact info at wilderlab.co.nz if you would like access keys generated for your account.}
+Please contact info at wilderlab.co if you would like access keys generated for your account.}
 
 \item{secret}{a string specifying the API secret access key for the client account.
-Please contact info at wilderlab.co.nz if you would like access keys generated for your account.}
+Please contact info at wilderlab.co if you would like access keys generated for your account.}
 
 \item{JobID}{a 6 digit integer specifying a Wilderlab job number. Required for accessing the records table.}
 
 \item{xapi}{a string specifying the X-API-Key value for the client account.
-Please contact info at wilderlab.co.nz if you would like access keys generated for your account.}
+Please contact info at wilderlab.co if you would like access keys generated for your account.}
 }
 \description{
-Wrapper functions for creating URLs and authorisaton headers to download job, sample, taxa and record information
+Wrapper functions for creating URLs and authorizaton headers to download job, sample, taxa and record information
 from the connect.wilderlab API.
 }
 \details{
 The Wilderlab API is designed for clients to access up-to-date eDNA data for their internal data storage
   platforms and geospatial applications. Clients can access their job, sample, taxon and eDNA records data at any time
-  by querying the API with a valid URL and authorization header. The get_wilderdata function is a wrapper that enables
+  by querying the API with a valid URL and authorisation header. The get_wilderdata function is a wrapper that enables
   these URLs and headers to be compiled with minimal effort.
 }
 \examples{
@@ -46,7 +46,7 @@ The Wilderlab API is designed for clients to access up-to-date eDNA data for the
  }
 }
 \seealso{
-Full tutorial available at \link{wilderlab.co.nz/api-instructions}
+Full tutorial available at \link{wilderlab.co/api-instructions}
 }
 \author{
 Shaun Wilkinson and Susan Welsh

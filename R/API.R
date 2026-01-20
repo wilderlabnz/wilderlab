@@ -5,18 +5,18 @@
 #'
 #' @param tb a character string specifying the table required. Accepted values are 'jobs', 'samples', 'taxa' and 'records'
 #' @param key a string specifying the API access key for the client account.
-#'   Please contact info at wilderlab.co.nz if you would like access keys generated for your account.
+#'   Please contact info at wilderlab.co if you would like access keys generated for your account.
 #' @param secret a string specifying the API secret access key for the client account.
-#'   Please contact info at wilderlab.co.nz if you would like access keys generated for your account.
+#'   Please contact info at wilderlab.co if you would like access keys generated for your account.
 #' @param xapi a string specifying the X-API-Key value for the client account.
-#'   Please contact info at wilderlab.co.nz if you would like access keys generated for your account.
+#'   Please contact info at wilderlab.co if you would like access keys generated for your account.
 #' @param JobID a 6 digit integer specifying a Wilderlab job number. Required for accessing the records table.
 #' @details The Wilderlab API is designed for clients to access up-to-date eDNA data for their internal data storage
 #'   platforms and geospatial applications. Clients can access their job, sample, taxon and eDNA records data at any time
-#'   by querying the API with a valid URL and authorization header. The get_wilderdata function is a wrapper that enables
+#'   by querying the API with a valid URL and authorisation header. The get_wilderdata function is a wrapper that enables
 #'   these URLs and headers to be compiled with minimal effort.
 #' @author Shaun Wilkinson and Susan Welsh
-#' @seealso Full tutorial available at \link{wilderlab.co.nz/api-instructions}
+#' @seealso Full tutorial available at \link{wilderlab.co/api-instructions}
 #' @examples
 #' \donttest{
 #'     key <- "AKIATVYXGCYLWADFJVEX"
@@ -31,11 +31,19 @@
 #'     }
 #'     records <- do.call("rbind", records)
 #'  }
-#'
 ################################################################################
 get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
   if(tb == "records" & is.null(JobID)) stop("Please specify a valid JobID to access eDNA records")
   if(tb != "records" & !is.null(JobID)) stop("JobID is only necessary for accessing records table")
+  ## taxa table
+  if(identical(tb, 'taxa')){
+    tmpf <- tempfile()
+    test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/taxa.rds",
+                          destfile = tmpf, mode = "wb")
+    res <- readRDS(tmpf)
+    file.remove(tmpf)
+    return(res)
+  }
   ## tutorial example
   if(key == "AKIATVYXGCYLWADFJVEX" &
      secret == "SiDvZFUFXlCXK/jeBtHrfRPWMmb8veW6q5+ULuyx" &
@@ -48,11 +56,6 @@ get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
     }else if (tb == "samples"){
       tmpf <- tempfile()
       test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/samples.rds", destfile = tmpf, mode = "wb")
-      res <- readRDS(tmpf)
-      return(res)
-    }else if(tb == "taxa"){
-      tmpf <- tempfile()
-      test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/taxa.rds", destfile = tmpf, mode = "wb")
       res <- readRDS(tmpf)
       return(res)
     }else if(tb == "records"){
@@ -101,3 +104,5 @@ get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
   return(res)
 }
 ################################################################################
+
+
