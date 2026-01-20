@@ -1,6 +1,6 @@
 #' Access eDNA data from the Wilderlab API.
 #'
-#' Wrapper functions for creating URLs and authorizaton headers to download job, sample, taxa and record information
+#' Wrapper functions for creating URLs and authorization headers to download job, sample, taxa and record information
 #' from the connect.wilderlab API.
 #'
 #' @param tb a character string specifying the table required. Accepted values are 'jobs', 'samples', 'taxa' and 'records'
@@ -13,7 +13,7 @@
 #' @param JobID a 6 digit integer specifying a Wilderlab job number. Required for accessing the records table.
 #' @details The Wilderlab API is designed for clients to access up-to-date eDNA data for their internal data storage
 #'   platforms and geospatial applications. Clients can access their job, sample, taxon and eDNA records data at any time
-#'   by querying the API with a valid URL and authorisation header. The get_wilderdata function is a wrapper that enables
+#'   by querying the API with a valid URL and authorization header. The get_wilderdata function is a wrapper that enables
 #'   these URLs and headers to be compiled with minimal effort.
 #' @author Shaun Wilkinson and Susan Welsh
 #' @seealso Full tutorial available at \link{wilderlab.co/api-instructions}
