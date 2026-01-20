@@ -1,7 +1,5 @@
 #' Get full lineage information for taxa.
 #'
-#' Wrapper functions for creating URLs and authorizaton headers to download job, sample, taxa and record information
-#' from the connect.wilderlab API.
 #'
 #' @param taxids A numeric vector of taxids to pull taxonomic information for.
 #' @param ranks A character vector of taxonomic ranks to return.
