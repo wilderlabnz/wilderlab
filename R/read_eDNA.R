@@ -1,7 +1,7 @@
 #' Read in Wilderlab results spreadsheets.
 #'
-#' Wrapper functions for creating URLs and authorizaton headers to download job, sample, taxa and record information
-#' from the connect.wilderlab API.
+#' Convenience function for reading Wilderlab eDNA results spreadsheets from local Excel (.xlsx) files,
+#' including splitting the metadata sheet into job and sample metadata.
 #'
 #' @param filepath A character string specifying path to the Wilderlab results file. Only .xlsx files are allowed. If
 #'    blank, an interactive dialog box will be presented to the user.
