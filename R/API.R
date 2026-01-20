@@ -32,9 +32,17 @@
 #'     records <- do.call("rbind", records)
 #'  }
 ################################################################################
-get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
+get_wilderdata <- function(tb, key = NULL, secret = NULL, xapikey = NULL, JobID = NULL){
   if(tb == "records" & is.null(JobID)) stop("Please specify a valid JobID to access eDNA records")
   if(tb != "records" & !is.null(JobID)) stop("JobID is only necessary for accessing records table")
+  ## require authentication details for all tables except taxa
+  if(!identical(tb, "taxa")){
+    if(missing(key) || is.null(key) ||
+       missing(secret) || is.null(secret) ||
+       missing(xapikey) || is.null(xapikey)){
+      stop("Please specify valid 'key', 'secret', and 'xapikey' for tables other than 'taxa'")
+    }
+  }
   ## taxa table
   if(identical(tb, 'taxa')){
     tmpf <- tempfile()
