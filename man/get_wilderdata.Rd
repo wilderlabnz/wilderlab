@@ -4,20 +4,20 @@
 \alias{get_wilderdata}
 \title{Access eDNA data from the Wilderlab API.}
 \usage{
-get_wilderdata(tb, key, secret, xapikey, JobID = NULL)
+get_wilderdata(tb, key = NULL, secret = NULL, xapikey = NULL, JobID = NULL)
 }
 \arguments{
 \item{tb}{a character string specifying the table required. Accepted values are 'jobs', 'samples', 'taxa' and 'records'}
 
-\item{key}{a string specifying the API access key for the client account.
+\item{key}{a string specifying the API access key for the client account. Not required for taxa table.
 Please contact info at wilderlab.co if you would like access keys generated for your account.}
 
-\item{secret}{a string specifying the API secret access key for the client account.
+\item{secret}{a string specifying the API secret access key for the client account. Not required for taxa table.
 Please contact info at wilderlab.co if you would like access keys generated for your account.}
 
 \item{JobID}{a 6 digit integer specifying a Wilderlab job number. Required for accessing the records table.}
 
-\item{xapi}{a string specifying the X-API-Key value for the client account.
+\item{xapi}{a string specifying the X-API-Key value for the client account. Not required for taxa table.
 Please contact info at wilderlab.co if you would like access keys generated for your account.}
 }
 \description{

@@ -22,8 +22,7 @@ get_lineages(
 A dataframe with one row for every taxid and one column for each rank.
 }
 \description{
-Wrapper functions for creating URLs and authorizaton headers to download job, sample, taxa and record information
-from the connect.wilderlab API.
+Get full lineage information for taxa.
 }
 \details{
 This function takes a vector of taxids and uses the insect package to pull the full lineage information for each taxid.

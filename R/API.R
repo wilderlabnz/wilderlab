@@ -4,11 +4,11 @@
 #' from the connect.wilderlab API.
 #'
 #' @param tb a character string specifying the table required. Accepted values are 'jobs', 'samples', 'taxa' and 'records'
-#' @param key a string specifying the API access key for the client account.
+#' @param key a string specifying the API access key for the client account. Not required for taxa table.
 #'   Please contact info at wilderlab.co if you would like access keys generated for your account.
-#' @param secret a string specifying the API secret access key for the client account.
+#' @param secret a string specifying the API secret access key for the client account. Not required for taxa table.
 #'   Please contact info at wilderlab.co if you would like access keys generated for your account.
-#' @param xapi a string specifying the X-API-Key value for the client account.
+#' @param xapi a string specifying the X-API-Key value for the client account. Not required for taxa table.
 #'   Please contact info at wilderlab.co if you would like access keys generated for your account.
 #' @param JobID a 6 digit integer specifying a Wilderlab job number. Required for accessing the records table.
 #' @details The Wilderlab API is designed for clients to access up-to-date eDNA data for their internal data storage

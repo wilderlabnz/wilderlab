@@ -14,8 +14,8 @@ blank, an interactive dialog box will be presented to the user.}
 A named list of tibbles of each sheet in the xlsx file. Note the metadata sheet is separated into job and samples metadata.
 }
 \description{
-Wrapper functions for creating URLs and authorization headers to download job, sample, taxa and record information
-from the connect.wilderlab API.
+Convenience function for reading Wilderlab eDNA results spreadsheets from local Excel (.xlsx) files,
+including splitting the metadata sheet into job and sample metadata.
 }
 \details{
 This function is designed for easily importing Wilderlab results spreadsheets into an R environment.
