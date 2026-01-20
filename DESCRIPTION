@@ -1,9 +1,9 @@
 Package: wilderlab
 Type: Package
 Title: Functions for working with Wilderlab eDNA data
-Version: 0.1.1
+Version: 0.1.2
 Author: Shaun Wilkinson and Susan Welsh
-Maintainer: Shaun Wilkinson <shaun@wilderlab.co.nz>
+Maintainer: Shaun Wilkinson <shaun@wilderlab.co>
 Description: Contains utility functions for importing and exporting Wilderlab eDNA data, job information and sample metadata.
 License: GPL-3
 LazyData: TRUE
@@ -19,8 +19,10 @@ Imports:
     kmer (>= 1.1.0),
     openssl, 
     phylogram (>= 2.0.0),
+    readxl,
     rjson,
     stats,
+    tidyr,
     utils,
     xml2
 Suggests:
@@ -28,4 +30,4 @@ Suggests:
     rmarkdown,
     testthat
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
