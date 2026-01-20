@@ -29,13 +29,12 @@ This function takes a vector of taxids and uses the insect package to pull the f
 }
 \examples{
 \donttest{
-  eDNA <- read_eDNA()
-  agg <- eDNA$aggregated
-  lineages <- get_lineages(agg$TaxID)
-  named <- merge(agg, lineages, by = "TaxID", sort = FALSE)
-  head(named)
+    eDNA <- read_eDNA()
+    agg <- eDNA$aggregated
+    lineages <- get_lineages(agg$TaxID)
+    named <- merge(agg, lineages, by = "TaxID", sort = FALSE)
+    head(named)
  }
-
 }
 \author{
 Shaun Wilkinson and Susan Welsh

@@ -9,13 +9,12 @@
 #' @author Shaun Wilkinson and Susan Welsh
 #' @examples
 #' \donttest{
-#'   eDNA <- read_eDNA()
-#'   agg <- eDNA$aggregated
-#'   lineages <- get_lineages(agg$TaxID)
-#'   named <- merge(agg, lineages, by = "TaxID", sort = FALSE)
-#'   head(named)
+#'     eDNA <- read_eDNA()
+#'     agg <- eDNA$aggregated
+#'     lineages <- get_lineages(agg$TaxID)
+#'     named <- merge(agg, lineages, by = "TaxID", sort = FALSE)
+#'     head(named)
 #'  }
-#'
 ################################################################################
 get_lineages <- function(taxids, ranks = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Superfamily", "Family", "Subfamily", "Genus"), tdb = NULL){
   # confirm aggregatedData is a taxid column
