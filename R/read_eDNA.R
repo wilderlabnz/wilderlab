@@ -8,6 +8,9 @@
 #' @details This function is designed for easily importing Wilderlab results spreadsheets into an R environment.
 #' @returns A named list of tibbles of each sheet in the xlsx file. Note the metadata sheet is separated into job and samples metadata.
 #' @author Shaun Wilkinson and Susan Welsh
+#' @importFrom readxl read_xlsx excel_sheets
+#' @importFrom tidyr pivot_wider
+#' @importFrom dplyr filter mutate
 ################################################################################
 read_eDNA <- function(filepath = file.choose()){
   # Require extension to be xlsx
