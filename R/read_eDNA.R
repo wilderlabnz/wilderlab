@@ -17,19 +17,19 @@ read_eDNA <- function(filepath = file.choose()){
   ext <- tools::file_ext(filepath)
   if(!identical(ext, "xlsx")) stop("Please select a xlsx file")
 
-  sheets <- excel_sheets(filepath)
+  sheets <- readxl::excel_sheets(filepath)
   out <- list()
 
   # split metadata sheet into jobs and samples
   if("metadata" %in% sheets){
 
-    metadata <- read_xlsx(filepath, sheet = "metadata", skip = 1)
+    metadata <- readxl::read_xlsx(filepath, sheet = "metadata", skip = 1)
     uidRow <- which(metadata[, 1] == "UID")
     jobmetadata <- metadata[1:(uidRow-1),1:2]
-    jobmetadata <- jobmetadata %>%
-      filter(!is.na(...1)) %>%
-      mutate(...1 = sub(":$", "", ...1)) %>%
-      pivot_wider(
+    jobmetadata <- jobmetadata |>
+      dplyr::filter(!is.na(...1)) |>
+      dplyr::mutate(...1 = sub(":$", "", ...1)) |>
+      tidyr::pivot_wider(
         names_from = ...1,
         values_from = ...2
       )
@@ -44,8 +44,9 @@ read_eDNA <- function(filepath = file.choose()){
 
   # read other sheets
   sheets <- sheets[sheets != "metadata"]
-  out <- append(out, sapply(sheets, function(sheet) read_xlsx(filepath, sheet = sheet), USE.NAMES = TRUE))
+  out <- append(out, sapply(sheets, function(sheet) readxl::read_xlsx(filepath, sheet = sheet), USE.NAMES = TRUE))
 
   # return named list
   return(out)
 }
+
