@@ -8,7 +8,7 @@
 #' @returns A dataframe with one row for every taxid and one column for each rank.
 #' @author Shaun Wilkinson and Susan Welsh
 #' @examples
-#' \donttest {
+#' \donttest{
 #'   eDNA <- read_eDNA()
 #'   agg <- eDNA$aggregated
 #'   lineages <- get_lineages(agg$TaxID)
