@@ -7,6 +7,14 @@
 #' @details This function takes a vector of taxids and uses the insect package to pull the full lineage information for each taxid.
 #' @returns A dataframe with one row for every taxid and one column for each rank.
 #' @author Shaun Wilkinson and Susan Welsh
+#' @examples
+#' \donttest{
+#'     eDNA <- read_eDNA()
+#'     agg <- eDNA$aggregated
+#'     lineages <- get_lineages(agg$TaxID)
+#'     named <- merge(agg, lineages, by = "TaxID", sort = FALSE)
+#'     head(named)
+#'  }
 ################################################################################
 get_lineages <- function(taxids, ranks = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Superfamily", "Family", "Subfamily", "Genus"), tdb = NULL){
   # confirm aggregatedData is a taxid column
