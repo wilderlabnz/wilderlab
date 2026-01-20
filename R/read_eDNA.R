@@ -10,8 +10,6 @@
 #' @author Shaun Wilkinson and Susan Welsh
 ################################################################################
 read_eDNA <- function(filepath = file.choose()){
-  require(readxl)
-  require(tidyr)
   # Require extension to be xlsx
   ext <- tools::file_ext(filepath)
   if(!identical(ext, "xlsx")) stop("Please select a xlsx file")
