@@ -1,3 +1,17 @@
+<style type="text/css">
+pre {
+  overflow-x: auto;
+}
+pre code {
+  word-wrap: normal;
+  white-space: pre;
+}
+
+h4{
+  color: #016793;
+}
+</style>
+
 ------------------------------------------------------------------------
 
 # Wilderlab R package
@@ -52,31 +66,46 @@ connect.wilderlab API.
 <col style="width: 81%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: left;">Argument</th>
 <th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><code>tb</code></td>
-<td style="text-align: left;">a character string specifying the table required. Accepted values are <code>jobs</code>, <code>samples</code>, <code>taxa</code>, and <code>records</code>.</td>
+<td style="text-align: left;">a character string specifying the table
+required. Accepted values are <code>jobs</code>, <code>samples</code>,
+<code>taxa</code>, and <code>records</code>. API access keys are not
+required when set to <code>taxa</code>.</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><code>key</code></td>
-<td style="text-align: left;">a string specifying the API access key for the client account. Please contact <a href="mailto:info@wilderlab.co.nz" class="email">info@wilderlab.co.nz</a> if you would like access keys generated for your account.</td>
+<td style="text-align: left;">a string specifying the API access key for
+the client account. Please contact <a href="mailto:info@wilderlab.co.nz"
+class="email">info@wilderlab.co.nz</a> if you would like access keys
+generated for your account.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><code>secret</code></td>
-<td style="text-align: left;">a string specifying the API secret access key for the client account. Please contact <a href="mailto:info@wilderlab.co.nz" class="email">info@wilderlab.co.nz</a> if you would like access keys generated for your account.</td>
+<td style="text-align: left;">a string specifying the API secret access
+key for the client account. Please contact <a
+href="mailto:info@wilderlab.co.nz"
+class="email">info@wilderlab.co.nz</a> if you would like access keys
+generated for your account.</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><code>xapikey</code></td>
-<td style="text-align: left;">a string specifying the X-API-Key value for the client account. Please contact <a href="mailto:info@wilderlab.co.nz" class="email">info@wilderlab.co.nz</a> if you would like access keys generated for your account.</td>
+<td style="text-align: left;">a string specifying the X-API-Key value
+for the client account. Please contact <a
+href="mailto:info@wilderlab.co.nz"
+class="email">info@wilderlab.co.nz</a> if you would like access keys
+generated for your account.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><code>JobID</code></td>
-<td style="text-align: left;">a 6 digit integer specifying a Wilderlab job number. Required only for accessing the records table.</td>
+<td style="text-align: left;">a 6 digit integer specifying a Wilderlab
+job number. Required only for accessing the records table.</td>
 </tr>
 </tbody>
 </table>
@@ -98,7 +127,7 @@ key is accessed as a whole:
 
     jobs <- get_wilderdata("jobs", key = key, secret = secret, xapikey = xapikey)
     samples <- get_wilderdata("samples", key = key, secret = secret, xapikey = xapikey)
-    taxa <- get_wilderdata("taxa", key = key, secret = secret, xapikey = xapikey)
+    taxa <- get_wilderdata("taxa")
 
 Pulling from the `records` table is done on a specified JobID thus
 multiple calls must be made to get a full records table. After accessing
@@ -151,14 +180,20 @@ Getting information from the `jobs` table:
     jobs <- get_wilderdata("jobs", key = key, secret = secret, xapikey = xapikey)
     jobs
     #>    JobID SubmissionDate     ContactName    ContactEmail PurchaseOrder
-    #> 1 601833     2021-07-04 Shaun Wilkinson api@example.com            NA
-    #> 2 601834     2021-07-04 Shaun Wilkinson api@example.com            NA
-    #>                            JobReference JobNotes NumberOfSamples TestsRequired
-    #> 1 Passive sampler validation experiment       NA               3            AP
-    #> 2 Passive sampler validation experiment       NA               3            AP
-    #>   MakeDataPublic PassCode JobStatus InvoiceNo
-    #> 1              1  W1E0638  Complete  INTERNAL
-    #> 2              1  W1E0638  Complete  INTERNAL
+    #> 1 601833     2021-07-04 Shaun Wilkinson api@example.com              
+    #> 2 601834     2021-07-04 Shaun Wilkinson api@example.com              
+    #>                            JobReference JobNotes NumberOfSamples
+    #> 1 Passive sampler validation experiment                        3
+    #> 2 Passive sampler validation experiment                        3
+    #>            AssayPanel MakeDataPublic PassCode JobStatus
+    #> 1 Comprehensive panel              1  W1E0638  Complete
+    #> 2 Comprehensive panel              1  W1E0638  Complete
+    #>                                                                                                        ResultsLink
+    #> 1 https://s3.ap-southeast-2.amazonaws.com/wilderlab.results/c03d243992534adcf4ffecd39c43d6e8/WLM601833_250626.xlsx
+    #> 2 https://s3.ap-southeast-2.amazonaws.com/wilderlab.results/a26f9576e52ce92c689070da34865104/WLM601834_250626.xlsx
+    #>   InvoiceNo
+    #> 1  INTERNAL
+    #> 2  INTERNAL
 
 ### Samples
 
@@ -166,63 +201,70 @@ Getting information from the `samples` table:
 
     samples <- get_wilderdata("samples", key = key, secret = secret, xapikey = xapikey)
     samples
-    #>    SID  JobID    UID CollectionDate     CollectedBy   ClientSampleID  Latitude
-    #> 1 8145 601833 507875     2021-07-03 Shaun Wilkinson Ruakokoputuna C3 -41.31267
-    #> 2 8143 601833 507877     2021-07-03 Shaun Wilkinson Ruakokoputuna C1 -41.31267
-    #> 3 8144 601833 510042     2021-07-03 Shaun Wilkinson Ruakokoputuna C2 -41.31267
-    #> 4 8146 601834 510897     2021-07-03 Shaun Wilkinson Ruakokoputuna P1 -41.31267
-    #> 5 8147 601834 510898     2021-07-03 Shaun Wilkinson Ruakokoputuna P2 -41.31267
-    #> 6 8148 601834 510899     2021-07-03 Shaun Wilkinson Ruakokoputuna P3 -41.31267
-    #>   Longitude VolumeFilteredML DeploymentDuration EnvironmentType   ClientNotes
-    #> 1  175.4499             1000                 NA    River/Stream Control rep 3
-    #> 2  175.4499             1000                 NA    River/Stream Control rep 1
-    #> 3  175.4499             1000                 NA    River/Stream Control rep 2
-    #> 4  175.4499               NA                 24    River/Stream Passive rep 1
-    #> 5  175.4499               NA                 24    River/Stream Passive rep 2
-    #> 6  175.4499               NA                 24    River/Stream Passive rep 3
-    #>        AccountName MakeDataPublic
-    #> 1 Wilderlab NZ Ltd              1
-    #> 2 Wilderlab NZ Ltd              1
-    #> 3 Wilderlab NZ Ltd              1
-    #> 4 Wilderlab NZ Ltd              1
-    #> 5 Wilderlab NZ Ltd              1
-    #> 6 Wilderlab NZ Ltd              1
+    #>    SID  JobID    UID CollectionDate     CollectedBy   ClientSampleID   Latitude
+    #> 1 8145 601833 507875     2021-07-03 Shaun Wilkinson Ruakokoputuna C3 -41.312665
+    #> 2 8143 601833 507877     2021-07-03 Shaun Wilkinson Ruakokoputuna C1 -41.312665
+    #> 3 8144 601833 510042     2021-07-03 Shaun Wilkinson Ruakokoputuna C2 -41.312665
+    #> 4 8146 601834 510897     2021-07-03 Shaun Wilkinson Ruakokoputuna P1 -41.312665
+    #> 5 8147 601834 510898     2021-07-03 Shaun Wilkinson Ruakokoputuna P2 -41.312665
+    #> 6 8148 601834 510899     2021-07-03 Shaun Wilkinson Ruakokoputuna P3 -41.312665
+    #>    Longitude VolumeFilteredML DeploymentDuration EnvironmentType   TICI
+    #> 1 175.449873             1000                       River/Stream 105.80
+    #> 2 175.449873             1000                       River/Stream   0.00
+    #> 3 175.449873             1000                       River/Stream 100.08
+    #> 4 175.449873                                  24    River/Stream 100.97
+    #> 5 175.449873                                  24    River/Stream 100.88
+    #> 6 175.449873                                  24    River/Stream  99.81
+    #>   TICINoSeqs TICIQuantile        TICIVersion   ClientNotes      AccountName
+    #> 1        109         0.57        Riverine V1 Control rep 3 Wilderlab NZ Ltd
+    #> 2          0         0.00 NC - Low seq count Control rep 1 Wilderlab NZ Ltd
+    #> 3        159         0.51        Riverine V1 Control rep 2 Wilderlab NZ Ltd
+    #> 4        391         0.52        Riverine V1 Passive rep 1 Wilderlab NZ Ltd
+    #> 5        381         0.52        Riverine V1 Passive rep 2 Wilderlab NZ Ltd
+    #> 6        320         0.50        Riverine V1 Passive rep 3 Wilderlab NZ Ltd
+    #>   MakeDataPublic
+    #> 1              1
+    #> 2              1
+    #> 3              1
+    #> 4              1
+    #> 5              1
+    #> 6              1
     #>                                                                                       Report
-    #> 1 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/9d2cb6bd7340b48f.html
-    #> 2 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/f702594d02f3430f.html
-    #> 3 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/fedf2bcc7a34d5d1.html
-    #> 4 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/39d1ee3138936298.html
-    #> 5 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/cfcf07466e1942ed.html
-    #> 6 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/0fce22b32ba71dbb.html
+    #> 1 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/c62322f1b3162646.html
+    #> 2 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/c62322f1b3162646.html
+    #> 3 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/c62322f1b3162646.html
+    #> 4 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/0b6f40128711495a.html
+    #> 5 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/0b6f40128711495a.html
+    #> 6 https://s3.ap-southeast-2.amazonaws.com/wilderlab.openwaters/reports/0b6f40128711495a.html
 
 ### Taxa
 
 Getting information from the `taxa` table:
 
-    taxa <- get_wilderdata("taxa", key = key, secret = secret, xapikey = xapikey)
+    taxa <- get_wilderdata("taxa")
     head(taxa, 10)
-    #>    TaxID ParentTaxID         Rank             Name                CommonName
-    #> 1      1           0      no rank             root                          
-    #> 2      2      131567 superkingdom         Bacteria                Eubacteria
-    #> 3     10     1706371        genus       Cellvibrio                          
-    #> 4     18      213421        genus       Pelobacter                          
-    #> 5     20       76892        genus Phenylobacterium                          
-    #> 6     22      267890        genus       Shewanella                          
-    #> 7     29       28221        order     Myxococcales Fruiting gliding bacteria
-    #> 8     31       80811       family    Myxococcaceae                          
-    #> 9     39       80811       family    Archangiaceae                          
-    #> 10    40          39        genus      Stigmatella                          
-    #>    MaoriName
-    #> 1           
-    #> 2           
-    #> 3           
-    #> 4           
-    #> 5           
-    #> 6           
-    #> 7           
-    #> 8           
-    #> 9           
-    #> 10
+    #>      TaxID ParentTaxID    Rank                        Name CommonName
+    #> 1  2880534     2880533 no rank unclassified Promesocentrus           
+    #> 2  2796488       94829   genus                Odontoscirus           
+    #> 3  2881051       61492 species       Nanoscypha aequispora           
+    #> 4  1375239      685409 species          Monopis argillacea           
+    #> 5   581807      581380   genus                 Clepsicosma           
+    #> 6  2010929     1505960   genus                 Limnogromia           
+    #> 7   706082     1583079   genus                     Ophisma           
+    #> 8   911187      558183   genus                  Diploperla           
+    #> 9   652877        6779   genus                   Cyclodius      crabs
+    #> 10    9443      314146   order                    Primates           
+    #>          Group
+    #> 1      Insects
+    #> 2     Rotifers
+    #> 3        Fungi
+    #> 4      Insects
+    #> 5      Insects
+    #> 6        Other
+    #> 7      Insects
+    #> 8      Insects
+    #> 9  Crustaceans
+    #> 10     Mammals
 
 ### Records
 
@@ -236,28 +278,17 @@ Getting information from the `records` table:
     records <- do.call("rbind", records)
 
     head(records, 10)
-    #>        HID    UID  TaxID    Rank           Name                  CommonName
-    #> 1  3963310 507875 578128  family  Holostichidae                    Ciliates
-    #> 2  3963311 507875 584654   genus Anteholosticha                            
-    #> 3  3963318 507875  50949   genus       Navicula                            
-    #> 4  3963327 507875   5948   genus    Stylonychia                            
-    #> 5  3963332 507875  70185   genus    Spongospora                            
-    #> 6  3963343 507877 584654   genus Anteholosticha                            
-    #> 7  3963344 507877  68038   genus    Chaetonotus                 Gastrotrich
-    #> 8  3963346 507877  41372  family  Chaetonotidae                            
-    #> 9  3963347 507877 109671 species Physella acuta Left handed sinistral snail
-    #> 10 3963357 507877  50949   genus       Navicula                            
-    #>       Group Count
-    #> 1  Ciliates    74
-    #> 2  Ciliates    69
-    #> 3   Diatoms    16
-    #> 4  Ciliates    10
-    #> 5     Other     7
-    #> 6  Ciliates    63
-    #> 7     Other    56
-    #> 8     Other    60
-    #> 9  Molluscs   531
-    #> 10  Diatoms     7
+    #>        HID    UID TaxID   Rank               Name CommonName    Group Count
+    #> 1  2557713 507875    10  genus         Cellvibrio            Bacteria    37
+    #> 2  2679827 510042    10  genus         Cellvibrio            Bacteria    43
+    #> 3  2557718 507875   237  genus     Flavobacterium            Bacteria    62
+    #> 4  2679837 510042   237  genus     Flavobacterium            Bacteria    21
+    #> 5  2557710 507875   444 family     Legionellaceae            Bacteria    42
+    #> 6  2557724 507875   543 family Enterobacteriaceae            Bacteria    20
+    #> 7  2557748 507877   543 family Enterobacteriaceae            Bacteria     7
+    #> 8  2679838 510042   543 family Enterobacteriaceae            Bacteria    20
+    #> 9  2679848 510042   642  genus          Aeromonas            Bacteria     6
+    #> 10 2679844 510042   978  genus          Cytophaga            Bacteria     9
 
 Adding lineage information and sample metadata information into the
 records table:
@@ -276,50 +307,68 @@ records table:
     records$ClientSampleID <- samples$ClientSampleID[match(records$UID, samples$UID)]
 
     head(records, 10)
-    #>        HID    UID  TaxID    Rank           Name                  CommonName
-    #> 1  3963310 507875 578128  family  Holostichidae                    Ciliates
-    #> 2  3963311 507875 584654   genus Anteholosticha                            
-    #> 3  3963318 507875  50949   genus       Navicula                            
-    #> 4  3963327 507875   5948   genus    Stylonychia                            
-    #> 5  3963332 507875  70185   genus    Spongospora                            
-    #> 6  3963343 507877 584654   genus Anteholosticha                            
-    #> 7  3963344 507877  68038   genus    Chaetonotus                 Gastrotrich
-    #> 8  3963346 507877  41372  family  Chaetonotidae                            
-    #> 9  3963347 507877 109671 species Physella acuta Left handed sinistral snail
-    #> 10 3963357 507877  50949   genus       Navicula                            
-    #>       Group Count          phylum             class            order
-    #> 1  Ciliates    74      Ciliophora      Spirotrichea       Urostylida
-    #> 2  Ciliates    69      Ciliophora      Spirotrichea       Urostylida
-    #> 3   Diatoms    16 Bacillariophyta Bacillariophyceae      Naviculales
-    #> 4  Ciliates    10      Ciliophora      Spirotrichea  Sporadotrichida
-    #> 5     Other     7        Endomyxa        Phytomyxea Plasmodiophorida
-    #> 6  Ciliates    63      Ciliophora      Spirotrichea       Urostylida
-    #> 7     Other    56    Gastrotricha              <NA>     Chaetonotida
-    #> 8     Other    60    Gastrotricha              <NA>     Chaetonotida
-    #> 9  Molluscs   531        Mollusca        Gastropoda             <NA>
-    #> 10  Diatoms     7 Bacillariophyta Bacillariophyceae      Naviculales
-    #>               family          genus        species  Latitude Longitude
-    #> 1      Holostichidae           <NA>           <NA> -41.31267  175.4499
-    #> 2      Holostichidae Anteholosticha           <NA> -41.31267  175.4499
-    #> 3       Naviculaceae       Navicula           <NA> -41.31267  175.4499
-    #> 4       Oxytrichidae    Stylonychia           <NA> -41.31267  175.4499
-    #> 5  Plasmodiophoridae    Spongospora           <NA> -41.31267  175.4499
-    #> 6      Holostichidae Anteholosticha           <NA> -41.31267  175.4499
-    #> 7      Chaetonotidae    Chaetonotus           <NA> -41.31267  175.4499
-    #> 8      Chaetonotidae           <NA>           <NA> -41.31267  175.4499
-    #> 9           Physidae       Physella Physella acuta -41.31267  175.4499
-    #> 10      Naviculaceae       Navicula           <NA> -41.31267  175.4499
-    #>      ClientSampleID
-    #> 1  Ruakokoputuna C3
-    #> 2  Ruakokoputuna C3
-    #> 3  Ruakokoputuna C3
-    #> 4  Ruakokoputuna C3
-    #> 5  Ruakokoputuna C3
-    #> 6  Ruakokoputuna C1
-    #> 7  Ruakokoputuna C1
-    #> 8  Ruakokoputuna C1
-    #> 9  Ruakokoputuna C1
-    #> 10 Ruakokoputuna C1
+    #>        HID    UID TaxID   Rank               Name CommonName    Group Count
+    #> 1  2557713 507875    10  genus         Cellvibrio            Bacteria    37
+    #> 2  2679827 510042    10  genus         Cellvibrio            Bacteria    43
+    #> 3  2557718 507875   237  genus     Flavobacterium            Bacteria    62
+    #> 4  2679837 510042   237  genus     Flavobacterium            Bacteria    21
+    #> 5  2557710 507875   444 family     Legionellaceae            Bacteria    42
+    #> 6  2557724 507875   543 family Enterobacteriaceae            Bacteria    20
+    #> 7  2557748 507877   543 family Enterobacteriaceae            Bacteria     7
+    #> 8  2679838 510042   543 family Enterobacteriaceae            Bacteria    20
+    #> 9  2679848 510042   642  genus          Aeromonas            Bacteria     6
+    #> 10 2679844 510042   978  genus          Cytophaga            Bacteria     9
+    #>            phylum               class            order             family
+    #> 1  Pseudomonadota Gammaproteobacteria  Cellvibrionales   Cellvibrionaceae
+    #> 2  Pseudomonadota Gammaproteobacteria  Cellvibrionales   Cellvibrionaceae
+    #> 3    Bacteroidota      Flavobacteriia Flavobacteriales  Flavobacteriaceae
+    #> 4    Bacteroidota      Flavobacteriia Flavobacteriales  Flavobacteriaceae
+    #> 5  Pseudomonadota Gammaproteobacteria    Legionellales     Legionellaceae
+    #> 6  Pseudomonadota Gammaproteobacteria Enterobacterales Enterobacteriaceae
+    #> 7  Pseudomonadota Gammaproteobacteria Enterobacterales Enterobacteriaceae
+    #> 8  Pseudomonadota Gammaproteobacteria Enterobacterales Enterobacteriaceae
+    #> 9  Pseudomonadota Gammaproteobacteria    Aeromonadales     Aeromonadaceae
+    #> 10   Bacteroidota          Cytophagia     Cytophagales      Cytophagaceae
+    #>             genus species   Latitude  Longitude   ClientSampleID
+    #> 1      Cellvibrio    <NA> -41.312665 175.449873 Ruakokoputuna C3
+    #> 2      Cellvibrio    <NA> -41.312665 175.449873 Ruakokoputuna C2
+    #> 3  Flavobacterium    <NA> -41.312665 175.449873 Ruakokoputuna C3
+    #> 4  Flavobacterium    <NA> -41.312665 175.449873 Ruakokoputuna C2
+    #> 5            <NA>    <NA> -41.312665 175.449873 Ruakokoputuna C3
+    #> 6            <NA>    <NA> -41.312665 175.449873 Ruakokoputuna C3
+    #> 7            <NA>    <NA> -41.312665 175.449873 Ruakokoputuna C1
+    #> 8            <NA>    <NA> -41.312665 175.449873 Ruakokoputuna C2
+    #> 9       Aeromonas    <NA> -41.312665 175.449873 Ruakokoputuna C2
+    #> 10      Cytophaga    <NA> -41.312665 175.449873 Ruakokoputuna C2
+
+## Other useful functions
+
+### `read_eDNA`
+
+This function is designed to easily import a Wilderlab results
+spreadsheet into an R environment. It returns a named list of tibbles:
+jobs, samples, aggregated, full, and TICI (if relevant).
+
+    # to use an interactive file explorer to select file for import
+    read_eDNA()
+    # to provide the file path as a parameter
+    read_eDNA("path/to/file.xlsx")
+
+### `get_lineages`
+
+This functions uses the
+[`insect`](https://github.com/shaunpwilkinson/insect) package to pull
+the full lineage information for each supplied taxon ID, returning a
+data frame with one column for each required rank. A warning will be
+printed if any taxon ids aren’t in the taxonomy table. If this happens,
+ask [Wilderlab](mailto:info@wilderlab.co) for a refreshed version of
+your eDNA results, since taxonomy is always changing in NCBI.
+
+    eDNA <- read_eDNA()
+    aggregated_data <- eDNA$aggregated
+    lineages <- get_lineages(aggregated_data$TaxID)
+    # to merge with aggregated date
+    aggregated_data <- merge(aggregated_data, lineages, by = "TaxID", sort = FALSE)
 
 ## Issues
 

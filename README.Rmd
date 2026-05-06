@@ -22,9 +22,26 @@ h4{
 }
 ```
 ```{r echo = FALSE}
-get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
+get_wilderdata <- function(tb, key = NULL, secret = NULL, xapikey = NULL, JobID = NULL){
   if(tb == "records" & is.null(JobID)) stop("Please specify a valid JobID to access eDNA records")
   if(tb != "records" & !is.null(JobID)) stop("JobID is only necessary for accessing records table")
+  ## require authentication details for all tables except taxa
+  if(!identical(tb, "taxa")){
+    if(missing(key) || is.null(key) ||
+       missing(secret) || is.null(secret) ||
+       missing(xapikey) || is.null(xapikey)){
+      stop("Please specify valid 'key', 'secret', and 'xapikey' for tables other than 'taxa'")
+    }
+  }
+  ## taxa table
+  if(identical(tb, 'taxa')){
+    tmpf <- tempfile()
+    test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/taxa.rds",
+                          destfile = tmpf, mode = "wb")
+    res <- readRDS(tmpf)
+    file.remove(tmpf)
+    return(res)
+  }
   ## tutorial example
   if(key == "AKIATVYXGCYLWADFJVEX" &
      secret == "SiDvZFUFXlCXK/jeBtHrfRPWMmb8veW6q5+ULuyx" &
@@ -37,11 +54,6 @@ get_wilderdata <- function(tb, key, secret, xapikey, JobID= NULL){
     }else if (tb == "samples"){
       tmpf <- tempfile()
       test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/samples.rds", destfile = tmpf, mode = "wb")
-      res <- readRDS(tmpf)
-      return(res)
-    }else if(tb == "taxa"){
-      tmpf <- tempfile()
-      test <- download.file("https://s3.ap-southeast-2.amazonaws.com/wilderlab.examples/taxa.rds", destfile = tmpf, mode = "wb")
       res <- readRDS(tmpf)
       return(res)
     }else if(tb == "records"){
@@ -142,7 +154,7 @@ get_wilderdata(tb, key, secret, xapikey, JobID = NULL)
 
 | Argument | Description
 |:-|:--------
-`tb` | a character string specifying the table required. Accepted values are `jobs`, `samples`, `taxa`, and `records`. 
+`tb` | a character string specifying the table required. Accepted values are `jobs`, `samples`, `taxa`, and `records`. API access keys are not required when set to `taxa`.
 `key` | a string specifying the API access key for the client account. Please contact info@wilderlab.co.nz if you would like access keys generated for your account.  
 `secret` | a string specifying the API secret access key for the client account. Please contact info@wilderlab.co.nz if you would like access keys generated for your account.
 `xapikey` | a string specifying the X-API-Key value for the client account. Please contact info@wilderlab.co.nz if you would like access keys generated for your account.
@@ -159,7 +171,7 @@ Pulling information from the `job`, `samples`, and `taxa` tables is very straigh
 ```{r eval=FALSE}
 jobs <- get_wilderdata("jobs", key = key, secret = secret, xapikey = xapikey)
 samples <- get_wilderdata("samples", key = key, secret = secret, xapikey = xapikey)
-taxa <- get_wilderdata("taxa", key = key, secret = secret, xapikey = xapikey)
+taxa <- get_wilderdata("taxa")
 ```
 
 
@@ -228,7 +240,7 @@ samples
 Getting information from the `taxa` table:
 
 ```{r taxa}
-taxa <- get_wilderdata("taxa", key = key, secret = secret, xapikey = xapikey)
+taxa <- get_wilderdata("taxa")
 head(taxa, 10)
 ```
 
@@ -266,7 +278,30 @@ records$ClientSampleID <- samples$ClientSampleID[match(records$UID, samples$UID)
 head(records, 10)
 ```
 
+## Other useful functions
 
+### `read_eDNA`
+
+This function is designed to easily import a Wilderlab results spreadsheet into an R environment. It returns a named list of tibbles: jobs, samples, aggregated, full, and TICI (if relevant).
+
+```{r read_eDNA, eval=FALSE}
+# to use an interactive file explorer to select file for import
+read_eDNA()
+# to provide the file path as a parameter
+read_eDNA("path/to/file.xlsx")
+```
+
+### `get_lineages`
+
+This functions uses the [`insect`](https://github.com/shaunpwilkinson/insect) package to pull the full lineage information for each supplied taxon ID, returning a data frame with one column for each required rank. A warning will be printed if any taxon ids aren't in the taxonomy table. If this happens, ask [Wilderlab](mailto:info@wilderlab.co) for a refreshed version of your eDNA results, since taxonomy is always changing in NCBI.
+
+```{r get_lineages, eval=FALSE}
+eDNA <- read_eDNA()
+aggregated_data <- eDNA$aggregated
+lineages <- get_lineages(aggregated_data$TaxID)
+# to merge with aggregated date
+aggregated_data <- merge(aggregated_data, lineages, by = "TaxID", sort = FALSE)
+```
 
 
 
